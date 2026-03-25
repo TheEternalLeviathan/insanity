@@ -1,0 +1,158 @@
+########################################
+# Environment Variables
+########################################
+.env
+.env.local
+.env.*.local
+*.env
+
+########################################
+# Python
+########################################
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+########################################
+# Virtual Environment
+########################################
+venv/
+ENV/
+env/
+.venv
+
+########################################
+# IDE / Editor
+########################################
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+########################################
+# Jupyter Notebook
+########################################
+.ipynb_checkpoints/
+*.ipynb
+
+########################################
+# 🔥 Model Files (DEFAULT: IGNORE)
+########################################
+models/**/*.pkl
+models/**/*.pth
+models/**/*.pt
+models/**/*.h5
+models/**/*.joblib
+models/**/*.bin
+models/**/*.safetensors
+
+########################################
+# ✅ ALLOW EXPERIMENTAL MODELS (v1.0)
+########################################
+!models/README.md
+!models/experimental/
+!models/experimental/**
+
+########################################
+# Data Files
+########################################
+data/
+*.csv
+*.json.gz
+*.parquet
+
+########################################
+# Logs
+########################################
+logs/
+*.log
+*.out
+
+########################################
+# Testing / Coverage
+########################################
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+########################################
+# Evaluation Outputs (generated)
+########################################
+evaluation/comprehensive_results.json
+evaluation/metrics_summary.json
+evaluation/readme_snippet.md
+ml_performance.jsonl
+
+########################################
+# Temporary / Cache
+########################################
+*.tmp
+*.temp
+*.cache
+.cache/
+
+########################################
+# API Keys & Secrets (extra safety)
+########################################
+*secret*
+*token*
+*key*
+*password*
+credentials.json
+service-account.json
+
+########################################
+# OS
+########################################
+Thumbs.db
+desktop.ini
+.DS_Store
+
+########################################
+# Backup Files
+########################################
+*.bak
+*.backup
+*~
+
+########################################
+# Database
+########################################
+*.db
+*.sqlite
+*.sqlite3
+
+########################################
+# Node (if any JS tooling)
+########################################
+node_modules/
+package-lock.json
+
+########################################
+# Docker
+########################################
+docker-compose.override.yml
+.dockerignore

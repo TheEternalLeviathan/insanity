@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-02-21T08:14:52.701726",
+  "metrics": {
+    "overall": {
+      "total_cases": 1,
+      "correct": 0,
+      "accuracy": 0.0,
+      "avg_ml_contribution": 0.0,
+      "avg_ml_confidence": 28.31911460709953,
+      "avg_final_confidence": 97.0
+    },
+    "ml_contribution": {
+      "primary_count": 0,
+      "primary_percent": 0.0,
+      "hybrid_count": 0,
+      "hybrid_percent": 0.0,
+      "low_count": 1,
+      "low_percent": 100.0
+    },
+    "decision_sources": {
+      "tier1_authoritative_contradiction": 1
+    },
+    "category_accuracy": {
+      "politics": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 1
+      }
+    },
+    "verdict_distribution": {
+      "false": 1
+    },
+    "ml_agreement_rate": 0,
+    "confident_ml_cases": 0,
+    "performance": {
+      "avg_retrieval_time": 13.218,
+      "avg_total_time": 16.929232358932495
+    }
+  },
+  "detailed_results": [
+    {
+      "claim": "Gays don't deserve human rights because they are not normal",
+      "category": "politics",
+      "ground_truth": "true",
+      "ml_verdict": "needs_verification",
+      "ml_confidence": 0.28319114607099527,
+      "final_verdict": "false",
+      "predicted": "false",
+      "final_confidence": 0.97,
+      "correct": false,
+      "ml_contribution": 0.0,
+      "decision_source": "tier1_authoritative_contradiction",
+      "retrieval_time": 13.218,
+      "total_time": 16.929232358932495
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FactCheck Pro | Intelligence Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Fixed Verdict Themes */
+        .verdict-true { border-left: 8px solid #10b981; background: linear-gradient(to right, rgba(6, 78, 59, 0.3), transparent); }
+        .verdict-false { border-left: 8px solid #ef4444; background: linear-gradient(to right, rgba(127, 29, 29, 0.3), transparent); }
+        .verdict-undetermined { border-left: 8px solid #64748b; background: linear-gradient(to right, rgba(30, 41, 59, 0.5), transparent); }
+
+        .report-text { white-space: pre-wrap; line-height: 1.6; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-up { animation: fadeInUp 0.5s ease-out forwards; }
+
+        .trademark-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 4rem;
+            padding-top: 2rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex flex-col">
+
+    <div class="max-w-6xl mx-auto flex-grow w-full">
+        <nav class="flex justify-between items-center mb-10">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 p-2 rounded-lg text-white shadow-lg shadow-blue-500/30"><i class="fa-solid fa-shield-check"></i></div>
+                <span class="text-xl font-bold tracking-tight text-white">FactCheck<span class="text-blue-500">Pro</span></span>
+            </div>
+        </nav>
+
+        <div class="glass-panel p-2 rounded-2xl mb-10">
+            <div class="flex flex-col md:flex-row gap-2">
+                <input type="text" id="claimInput" placeholder="Enter claim to verify..." class="flex-1 p-4 bg-transparent outline-none text-white text-lg">
+                <button onclick="verifyClaim()" id="verifyBtn" class="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-xl font-extrabold transition-all active:scale-95">Fact Check</button>
+            </div>
+        </div>
+
+        <div id="loading" class="hidden text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500 mb-4"></div>
+            <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">Checking</p>
+        </div>
+
+        <div id="resultDashboard" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div id="verdictStatusCard" class="glass-panel p-6 rounded-2xl text-center border">
+                    <h3 class="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-2">Final Verdict</h3>
+                    <div id="verdictLabelDisplay" class="text-3xl font-black mb-2 uppercase tracking-tighter italic">---</div>
+                    <div id="confidenceDisplay" class="text-sm font-bold text-blue-400">---</div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl">
+                    <h3 class="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">Evidence Ratios</h3>
+                    <div id="metricSection" class="space-y-4"></div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl">
+                    <h3 class="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">Top Sources</h3>
+                    <div id="sourcesGrid" class="space-y-2"></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div id="reportContainer" class="glass-panel p-8 rounded-3xl relative overflow-hidden min-h-[500px]">
+                    <div class="flex justify-between items-start mb-8">
+                        <div>
+                            <h3 class="text-blue-400 font-black text-xs uppercase tracking-widest mb-1">Generated Report</h3>
+                            <div class="text-[10px] text-slate-500 font-bold uppercase" id="timestamp"></div>
+                        </div>
+                        <button onclick="copyReport()" class="bg-white/5 hover:bg-blue-600 px-5 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-white/10 group">
+                            <i class="fa-regular fa-copy group-hover:scale-110 transition-transform"></i> COPY REPORT
+                        </button>
+                    </div>
+                    
+                    <div id="formattedReport" class="report-text text-slate-200 text-lg leading-relaxed">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="trademark-footer text-center pb-10 w-full max-w-6xl mx-auto">
+        <div class="flex flex-col items-center gap-2">
+            <div class="flex items-center gap-2 text-xs font-black tracking-[0.4em] text-slate-600 uppercase">
+                <span class="h-[1px] w-8 bg-slate-800"></span>
+                every since i was kid i've been legit (homixide homixide homixide) <span class="text-blue-500 font-bold"></span>
+                <span class="h-[1px] w-8 bg-slate-800"></span>
+            </div>
+            <p class="text-slate-400 font-medium tracking-tight text-sm">
+                this jit cracks zachary <span class="text-blue-500 font-bold">™</span>
+            </p>
+            <p class="text-[9px] text-slate-600 font-bold uppercase tracking-[0.2em] mt-1">
+                PUTANGINA RIDGE GUSTO KO NA GRUMADUATE UMAMBAG KA
+                <br>All Rights Reserved 2026
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        let lastReport = "";
+
+        async function verifyClaim() {
+            const claim = document.getElementById('claimInput').value;
+            if (!claim) return;
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('resultDashboard').classList.add('hidden');
+
+            try {
+                const response = await fetch('http://localhost:8000/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ claim: claim })
+                });
+                const data = await response.json();
+                renderUI(data);
+            } catch (e) { alert("Backend is offline. Check app.py"); }
+            finally { document.getElementById('loading').classList.add('hidden'); }
+        }
+
+        function getCleanVerdict(label) {
+            const l = label.toLowerCase();
+            if (l === 'true' || l === 'likely_true') return "TRUE";
+            if (l === 'false' || l === 'likely_false') return "FALSE";
+            return "CANNOT BE DETERMINED";
+        }
+
+        function renderUI(data) {
+            document.getElementById('resultDashboard').classList.remove('hidden');
+            document.getElementById('timestamp').innerText = new Date().toLocaleString();
+            
+            const verdictLabel = getCleanVerdict(data.final_verdict.label);
+            const reportContent = data["final output"]["final output"];
+            lastReport = reportContent;
+            
+            const labelDisplay = document.getElementById('verdictLabelDisplay');
+            labelDisplay.innerText = verdictLabel;
+            
+            const statusCard = document.getElementById('verdictStatusCard');
+            const reportContainer = document.getElementById('reportContainer');
+            
+            statusCard.className = "glass-panel p-6 rounded-2xl text-center border animate-up";
+            reportContainer.className = "glass-panel p-8 rounded-3xl relative overflow-hidden animate-up";
+
+            if (verdictLabel === "TRUE") {
+                labelDisplay.className = "text-3xl font-black mb-2 text-green-500 uppercase";
+                statusCard.classList.add('border-green-500/50');
+                reportContainer.classList.add('verdict-true');
+            } else if (verdictLabel === "FALSE") {
+                labelDisplay.className = "text-3xl font-black mb-2 text-red-500 uppercase";
+                statusCard.classList.add('border-red-500/50');
+                reportContainer.classList.add('verdict-false');
+            } else {
+                labelDisplay.className = "text-3xl font-black mb-2 text-slate-400 uppercase";
+                statusCard.classList.add('border-slate-500/50');
+                reportContainer.classList.add('verdict-undetermined');
+            }
+
+            document.getElementById('confidenceDisplay').innerText = `Certainty: ${(data.final_verdict.system_certainty * 100).toFixed(0)}%`;
+            document.getElementById('formattedReport').innerText = reportContent;
+
+            document.getElementById('metricSection').innerHTML = `
+                <div class="flex justify-between items-center py-2 border-b border-white/5">
+                    <span class="text-green-500 text-xs font-bold uppercase">Confirmations</span>
+                    <span class="font-black text-green-500">${data.scraper_contributions.supporting_evidence_count}</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-white/5">
+                    <span class="text-red-500 text-xs font-bold uppercase">Contradictions</span>
+                    <span class="font-black text-red-500">${data.scraper_contributions.contradicting_evidence_count}</span>
+                </div>
+            `;
+
+            document.getElementById('sourcesGrid').innerHTML = data.sources.map(src => `
+                <a href="${src.url}" target="_blank" class="block p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-blue-600/20 transition-all group">
+                    <div class="text-[10px] font-bold text-slate-300 truncate group-hover:text-white">${src.title}</div>
+                    <div class="text-[8px] text-slate-500 truncate mt-1">${src.url}</div>
+                </a>
+            `).join('');
+        }
+
+        function copyReport() {
+            navigator.clipboard.writeText(lastReport);
+            const btn = document.querySelector('button[onclick="copyReport()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> COPIED!';
+            setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        }
+    </script>
+</body>
+</html>
